@@ -2,7 +2,7 @@
 [![Coverage Status](https://img.shields.io/coveralls/mjt01/less-vars-to-js.svg?style=flat-square)](https://coveralls.io/github/mjt01/less-vars-to-js?branch=master)
 [![npm](https://img.shields.io/npm/v/less-vars-to-js.svg?style=flat-square)](https://www.npmjs.com/package/less-vars-to-js)
 # less-vars-to-js
-Read [LESS](http://lesscss.org/) variables from the contents of a file and returning them as a javascript object.
+Read [LESS](http://lesscss.org/) variables from the contents of a file and return them as a javascript object.
 ```js
 $ npm install --save less-vars-to-js
 ```
