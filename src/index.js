@@ -1,7 +1,7 @@
 export default sheet => {
   const lessVars = {};
 
-  sheet.match(/@(.[^;]*)/g)
+  sheet.match(/@(.*:[^;]*)/g)
     .forEach(variable => {
       if (variable.indexOf('@import') === 0) {
         return;

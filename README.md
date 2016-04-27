@@ -27,6 +27,11 @@ Example :
 
 // Grid
 @row-height: 9;
+
+.element {
+  @foreground: black;
+  color: @foreground;
+}
 ```
 Example output:
 ```js
@@ -35,9 +40,11 @@ Example output:
   '@pink': '#e60278',
   '@background': '@gray',
   '@favourite': 'blanchedalmond',
-  '@row-height': 9
+  '@row-height': 9,
+  '@foreground': 'black'
 }
 ```
+**Note:** while it does return variables it finds within rules, it is recommended to use this on files containing only variables, as it's not a parser and is designed to extract design principles for style guides.
 
 ### Usage
 ```js

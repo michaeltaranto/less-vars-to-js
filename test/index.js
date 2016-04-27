@@ -63,6 +63,44 @@ const cases = [
       '@blue': '#0d3880',
       '@pink': '#e60278'
     }
+  },
+  {
+    should: 'should ignore rules',
+    input: `
+      @import (reference) 'theme';
+
+      @blue: #0d3880;
+
+      .element {
+        color: @foreground;
+      }
+
+      @pink: #e60278;
+    `,
+    output: {
+      '@blue': '#0d3880',
+      '@pink': '#e60278'
+    }
+  },
+  {
+    should: 'should ignore include variables from within',
+    input: `
+      @import (reference) 'theme';
+
+      @blue: #0d3880;
+
+      .element {
+        @foreground: black;
+        color: @foreground;
+      }
+
+      @pink: #e60278;
+    `,
+    output: {
+      '@blue': '#0d3880',
+      '@foreground': 'black',
+      '@pink': '#e60278'
+    }
   }
 ];
 
