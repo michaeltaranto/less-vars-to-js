@@ -10,6 +10,35 @@ $ npm install --save less-vars-to-js
 ### Why?
 I wrote this to use in our living style guide where we document our colour palette, typography, grid, components etc. This allows variables to be visualised in the style guide without having to read through the code (useful for non-technical team members).
 
+### What does it do?
+Takes in the contents of a less file as a `string` and returns an `object` containing all the variables it found. It is deliberately naive as it is not intending to be a less parser. Basically it reads anything starting with an `@`, so it will ignore comments, rule definitions, import statements etc.
+
+Example :
+```less
+@import (reference) "theme";
+
+// Colour palette
+@blue: #0d3880;
+@pink: #e60278;
+
+// Elements
+@background: @gray;
+@favourite: blanchedalmond;
+
+// Grid
+@row-height: 9;
+```
+Example output:
+```js
+{
+  '@blue': '#0d3880',
+  '@pink': '#e60278',
+  '@background': '@gray',
+  '@favourite': 'blanchedalmond',
+  '@row-height': 9
+}
+```
+
 ### Usage
 ```js
 import lessToJs from 'less-vars-to-js';
