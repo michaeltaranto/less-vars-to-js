@@ -101,6 +101,17 @@ const cases = [
       '@foreground': 'black',
       '@pink': '#e60278'
     }
+  },
+  {
+    should: 'should not break in file with no variables',
+    input: `
+      @import (reference) 'theme';
+
+      .element {
+        color: black;
+      }
+    `,
+    output: {}
   }
 ];
 
