@@ -1,6 +1,6 @@
 {
   "name": "less-vars-to-js",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Read LESS variables from the contents of a file and returning them as a javascript object.",
   "main": "dist/index.js",
   "scripts": {
