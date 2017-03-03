@@ -1,5 +1,5 @@
-[![Build Status](https://img.shields.io/travis/mjt01/less-vars-to-js/master.svg?style=flat-square)](https://travis-ci.org/mjt01/less-vars-to-js)
-[![Coverage Status](https://img.shields.io/coveralls/mjt01/less-vars-to-js.svg?style=flat-square)](https://coveralls.io/github/mjt01/less-vars-to-js?branch=master)
+[![Build Status](https://img.shields.io/travis/michaeltaranto/less-vars-to-js/master.svg?style=flat-square)](https://travis-ci.org/michaeltaranto/less-vars-to-js)
+[![Coverage Status](https://img.shields.io/coveralls/michaeltaranto/less-vars-to-js.svg?style=flat-square)](https://coveralls.io/github/michaeltaranto/less-vars-to-js?branch=master)
 [![npm](https://img.shields.io/npm/v/less-vars-to-js.svg?style=flat-square)](https://www.npmjs.com/package/less-vars-to-js)
 # less-vars-to-js
 Read [LESS](http://lesscss.org/) variables from the contents of a file and return them as a javascript object.
@@ -79,4 +79,4 @@ export default class Palette extends Component {
 
 ### License
 
-[MIT](http://mjt01.mit-license.org)
+[MIT](http://michaeltaranto.mit-license.org)
