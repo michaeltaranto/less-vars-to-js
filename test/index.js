@@ -112,6 +112,15 @@ const cases = [
       }
     `,
     output: {}
+  },
+  {
+    should: 'should trim variable names',
+    input: `
+      @blue : #0d3880;
+    `,
+    output: {
+      '@blue': '#0d3880'
+    }
   }
 ];
 
