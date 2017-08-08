@@ -66,7 +66,7 @@ export default class Palette extends Component {
         Object.keys(palette)
           .forEach(colour => (
             <div style={{ backgroundColor: palette[colour] }}>
-              <p>{ colour }<p>
+              <p>{ colour }</p>
               <p>{ palette[colour] }</p>
             </div>
           ))
