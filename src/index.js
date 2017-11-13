@@ -4,7 +4,7 @@ export default sheet => {
 
   matches.forEach(variable => {
     const definition = variable.split(/:\s*/);
-    lessVars[definition[0].replace(/['"]+/g, '').trim()] = definition[1];
+    lessVars[definition[0].replace(/['"]+/g, '').trim()] = definition.splice(1).join(':');
   });
 
   return lessVars;
