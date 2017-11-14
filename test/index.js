@@ -128,7 +128,7 @@ const cases = [
       @icon-url : https://xxx.com:8080/t/font;
     `,
     output: {
-      '@icon-url' : "https://xxx.com:8080/t/font"
+      '@icon-url': 'https://xxx.com:8080/t/font'
     }
   }
 ];
