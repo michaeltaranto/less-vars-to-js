@@ -121,6 +121,15 @@ const cases = [
     output: {
       '@blue': '#0d3880'
     }
+  },
+  {
+    should: 'should read variables that are url',
+    input: `
+      @icon-url : https://xxx.com:8080/t/font;
+    `,
+    output: {
+      '@icon-url': 'https://xxx.com:8080/t/font'
+    }
   }
 ];
 
