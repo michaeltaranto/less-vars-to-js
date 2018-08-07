@@ -34,17 +34,24 @@ Example :
 }
 ```
 Example output:
-```js
+```json
 {
-  '@blue': '#0d3880',
-  '@pink': '#e60278',
-  '@background': '@gray',
-  '@favourite': 'blanchedalmond',
-  '@row-height': 9,
-  '@foreground': 'black'
+  "@blue": "#0d3880",
+  "@pink": "#e60278",
+  "@background": "@gray",
+  "@favourite": "blanchedalmond",
+  "@row-height": 9,
+  "@foreground": "black"
 }
 ```
 **Note:** while it does return variables it finds within rules, it is recommended to use this on files containing only variables, as it's not a parser and is designed to extract design principles for style guides.
+
+### Options
+| Option            | Effect                                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------------ |
+| resolveVariables  | Resolves variables when they are defined in the same file.                                                   |
+| defaults          | When `resolveVariables` is true, passes an object to use when the value cannot be resolved in the same file. |
+| stripPrefix       | Removes the `@` or `$` in the returned object keys.                                                          |
 
 ### Usage
 ```js
@@ -55,7 +62,7 @@ import fs from 'fs';
 const paletteLess = fs.readFileSync('palette.less', 'utf8');
 
 // Pass in file contents
-const palette = lessToJs(paletteLess);
+const palette = lessToJs(paletteLess, {resolveVariables: true, stripPrefix: true});
 
 // Use the variables (example React component)
 export default class Palette extends Component {
