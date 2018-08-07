@@ -29,6 +29,16 @@ it('should read variables that reference other variables', () => expect(lessVars
   '@pink': '@blue'
 }));
 
+it('should resolve variables that reference other variables', () => expect(lessVarsToJS(`
+  @import (reference) 'theme';
+  
+  @blue: lightblue;
+  @pink: @blue;
+`, { resolveVariables: true })).to.deep.equal({
+  '@blue': 'lightblue',
+  '@pink': 'lightblue'
+}));
+
 it('should ignore comments', () => expect(lessVarsToJS(`
   // colour palette
   @blue: #0d3880;
@@ -36,6 +46,14 @@ it('should ignore comments', () => expect(lessVarsToJS(`
 `)).to.deep.equal({
   '@blue': '#0d3880',
   '@pink': '#e60278'
+}));
+
+it('should ignore variables in comments', () => expect(lessVarsToJS(`
+  @blue: #0d3880; // Comment @blue: blue
+  // @blue: blue;
+  /* @blue: blue; */
+`)).to.deep.equal({
+  '@blue': '#0d3880'
 }));
 
 it('should ignore import statements', () => expect(lessVarsToJS(`
@@ -94,8 +112,20 @@ it('should trim variable names', () => expect(lessVarsToJS(`
   '@blue': '#0d3880'
 }));
 
+it('should trim values', () => expect(lessVarsToJS(`
+  @blue :   #0d3880  ;
+`)).to.deep.equal({
+  '@blue': '#0d3880'
+}));
+
 it('should read variables that are url', () => expect(lessVarsToJS(`
   @icon-url : "https://xxx.com:8080/t/font";
 `)).to.deep.equal({
   '@icon-url': 'https://xxx.com:8080/t/font'
+}));
+
+it('should remove the @ when stripPrefix is true', () => expect(lessVarsToJS(`
+    @blue : #0d3880;
+`, { stripPrefix: true })).to.deep.equal({
+  'blue': '#0d3880'
 }));
