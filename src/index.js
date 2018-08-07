@@ -9,8 +9,9 @@ const followVar = (value, lessVars, constants) => {
   return value;
 };
 
-export default (sheet, constants = {}) => {
-  const lessVars = {};
+export default (sheet, options = {}) => {
+  const { defaults = {}, resolveVariables, stripPrefix } = options;
+  let lessVars = {};
   const matches = stripComments(sheet).match(/[@$](.*:[^;]*)/g) || [];
 
   matches.forEach(variable => {
@@ -20,15 +21,21 @@ export default (sheet, constants = {}) => {
     lessVars[definition[0].replace(/['"]+/g, '').trim()] = value;
   });
 
-  Object.keys(lessVars).forEach(key => {
-    const value = lessVars[key];
-    lessVars[key] = followVar(value, lessVars, constants);
-  });
+  if (resolveVariables) {
+    Object.keys(lessVars).forEach(key => {
+      const value = lessVars[key];
+      lessVars[key] = followVar(value, lessVars, defaults);
+    });
+  }
 
-  const transformKey = key => key.replace(varRgx, '');
+  if (stripPrefix) {
+    const transformKey = key => key.replace(varRgx, '');
 
-  return Object.keys(lessVars).reduce((prev, key) => {
-    prev[transformKey(key)] = lessVars[key];
-    return prev;
-  }, {});
+    lessVars = Object.keys(lessVars).reduce((prev, key) => {
+      prev[transformKey(key)] = lessVars[key];
+      return prev;
+    }, {});
+  }
+
+  return lessVars;
 };
