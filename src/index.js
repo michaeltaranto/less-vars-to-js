@@ -1,10 +1,10 @@
 import stripComments from 'strip-json-comments';
 
 const varRgx = /^[@$]/;
-const followVar = (value, lessVars, constants) => {
+const followVar = (value, lessVars, defaults) => {
   if (varRgx.test(value)) {
     // value is a variable
-    return followVar(lessVars[value] || constants[value.substring(1)]);
+    return followVar(lessVars[value] || defaults[value.replace(varRgx, '')]);
   }
   return value;
 };

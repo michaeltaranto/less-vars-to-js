@@ -129,3 +129,31 @@ it('should remove the @ when stripPrefix is true', () => expect(lessVarsToJS(`
 `, { stripPrefix: true })).to.deep.equal({
   'blue': '#0d3880'
 }));
+
+it('should use default variable values', () => expect(lessVarsToJS(`
+  @color : @blue;
+`, { resolveVariables: true, defaults: { 'blue': '#0000FF' } })).to.deep.equal({
+  '@color': '#0000FF'
+}));
+
+it('should not parse functions', () => expect(lessVarsToJS(`
+  @color : darken(@blue, 20%);
+`)).to.deep.equal({
+  '@color': 'darken(@blue, 20%)'
+}));
+
+it('should support sass variables', () => expect(lessVarsToJS(`
+  $font-stack:    Helvetica, sans-serif;
+  $primary-color: #333;
+`)).to.deep.equal({
+  '$font-stack': 'Helvetica, sans-serif',
+  '$primary-color': '#333'
+}));
+
+it('should support sass variables with stripPrefix', () => expect(lessVarsToJS(`
+  $font-stack:    Helvetica, sans-serif;
+  $primary-color: #333;
+`, { stripPrefix: true })).to.deep.equal({
+  'font-stack': 'Helvetica, sans-serif',
+  'primary-color': '#333'
+}));
