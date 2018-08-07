@@ -44,5 +44,8 @@
     "eslint": "^2.8.0",
     "eslint-plugin-mocha": "^2.2.0",
     "mocha": "^2.4.5"
+  },
+  "dependencies": {
+    "strip-json-comments": "^2.0.1"
   }
 }
