@@ -132,7 +132,7 @@ it('should remove the @ when stripPrefix is true', () => expect(lessVarsToJS(`
 
 it('should use default variable values', () => expect(lessVarsToJS(`
   @color : @blue;
-`, { resolveVariables: true, defaults: { 'blue': '#0000FF' } })).to.deep.equal({
+`, { resolveVariables: true, dictionary: { 'blue': '#0000FF' } })).to.deep.equal({
   '@color': '#0000FF'
 }));
 

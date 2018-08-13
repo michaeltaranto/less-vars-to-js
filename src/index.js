@@ -1,16 +1,16 @@
 import stripComments from 'strip-json-comments';
 
 const varRgx = /^[@$]/;
-const followVar = (value, lessVars, defaults) => {
+const followVar = (value, lessVars, dictionary) => {
   if (varRgx.test(value)) {
     // value is a variable
-    return followVar(lessVars[value] || defaults[value.replace(varRgx, '')]);
+    return followVar(lessVars[value] || dictionary[value.replace(varRgx, '')]);
   }
   return value;
 };
 
 export default (sheet, options = {}) => {
-  const { defaults = {}, resolveVariables, stripPrefix } = options;
+  const { dictionary = {}, resolveVariables = false, stripPrefix = false } = options;
   let lessVars = {};
   const matches = stripComments(sheet).match(/[@$](.*:[^;]*)/g) || [];
 
@@ -24,7 +24,7 @@ export default (sheet, options = {}) => {
   if (resolveVariables) {
     Object.keys(lessVars).forEach(key => {
       const value = lessVars[key];
-      lessVars[key] = followVar(value, lessVars, defaults);
+      lessVars[key] = followVar(value, lessVars, dictionary);
     });
   }
 
