@@ -1,6 +1,6 @@
 [![Build Status](https://img.shields.io/travis/michaeltaranto/less-vars-to-js/master.svg?style=flat-square)](https://travis-ci.org/michaeltaranto/less-vars-to-js)
 [![Coverage Status](https://img.shields.io/coveralls/michaeltaranto/less-vars-to-js.svg?style=flat-square)](https://coveralls.io/github/michaeltaranto/less-vars-to-js?branch=master)
-[![npm](https://img.shields.io/npm/v/less-vars-to-js.svg?style=flat-square)](https://www.npmjs.com/package/less-vars-to-js)
+[![npm](https://img.shields.io/npm/v/less-vars-to-js.svg?style=flat-square)](https://www.npmjs.com/package/less-vars-to-js) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square)](https://github.com/semantic-release/semantic-release) [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
 # less-vars-to-js
 Read [LESS](http://lesscss.org/) variables from the contents of a file and return them as a javascript object.
 ```js
