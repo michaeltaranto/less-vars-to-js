@@ -1,7 +1,19 @@
 language: node_js
 
 node_js:
-  - 5.2
+  - 8
 
-after_script:
-  - npm run coveralls
+jobs:
+  include:
+    - stage: test
+      script:
+        - npm test
+        - npm run coveralls
+    - stage: publish
+      script:
+        - npm run semantic-release
+
+stages:
+  - test
+  - name: publish
+    if: branch = master
