@@ -3,17 +3,9 @@ language: node_js
 node_js:
   - 8
 
-jobs:
-  include:
-    - stage: test
-      script:
-        - npm test
-        - npm run coveralls
-    - stage: publish
-      script:
-        - npm run semantic-release
+script:
+  - npm test
+  - npm run coveralls
 
-stages:
-  - test
-  - name: publish
-    if: branch = master
+after_success:
+  - npm run semantic-release
