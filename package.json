@@ -56,6 +56,9 @@
     "mocha": "^2.4.5",
     "semantic-release": "^15.9.8"
   },
+  "dependencies": {
+    "strip-json-comments": "^2.0.1"
+  },
   "engines": {
     "node": ">=8"
   },
