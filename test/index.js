@@ -157,3 +157,15 @@ it('should support sass variables with stripPrefix', () => expect(lessVarsToJS(`
   'font-stack': 'Helvetica, sans-serif',
   'primary-color': '#333'
 }));
+
+it('should recursively call followVar', () => expect(lessVarsToJS(`
+  @klm:    @hij;
+  @abc:    '#fff';
+  @def:    @abc;
+  @hij:    @def;
+`, { stripPrefix: true, resolveVariables: true })).to.deep.equal({
+  abc: '#fff',
+  def: '#fff',
+  hij: '#fff',
+  klm: '#fff'
+}));

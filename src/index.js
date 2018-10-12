@@ -4,7 +4,7 @@ const varRgx = /^[@$]/;
 const followVar = (value, lessVars, dictionary) => {
   if (varRgx.test(value)) {
     // value is a variable
-    return followVar(lessVars[value] || dictionary[value.replace(varRgx, '')]);
+    return followVar(lessVars[value] || dictionary[value.replace(varRgx, '')], lessVars, dictionary);
   }
   return value;
 };
