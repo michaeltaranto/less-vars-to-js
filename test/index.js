@@ -126,6 +126,8 @@ it('should not break in file with no variables', () => expect(lessVarsToJS(`
   }
 `)).to.deep.equal({}));
 
+it('should not break in empty file', () => expect(lessVarsToJS('')).to.deep.equal({}));
+
 it('should trim variable names', () => expect(lessVarsToJS(`
     @blue : #0d3880;
 `)).to.deep.equal({
@@ -156,6 +158,14 @@ it('should use default variable values', () => expect(lessVarsToJS(`
   @color : @blue;
 `, { resolveVariables: true, dictionary: { 'blue': '#0000FF' } })).to.deep.equal({
   '@color': '#0000FF'
+}));
+
+it('should prefer less variables over dictionary', () => expect(lessVarsToJS(`
+  @blue  : #4176A7;
+  @color : @blue;
+`, { resolveVariables: true, dictionary: { 'blue': '#0000FF' } })).to.deep.equal({
+  '@blue': '#4176A7',
+  '@color': '#4176A7'
 }));
 
 it('should not parse functions', () => expect(lessVarsToJS(`
@@ -194,6 +204,13 @@ it('should support maps', () => expect(lessVarsToJS(`
   }
 }));
 
+it('should handle empty maps', () => expect(lessVarsToJS(`
+  @colors: {
+  }
+`)).to.deep.equal({
+  '@colors': {}
+}));
+
 it('should resolve variables in maps', () => expect(lessVarsToJS(`
   @blue: #4176A7;
   @colors: {
@@ -215,11 +232,20 @@ it('should handle all possibilities at once', () => expect(lessVarsToJS(`
     primary: @red;
     dark-blue: darken(@blue, 20%);
   }
-`, { resolveVariables: true, dictionary: { 'red': '#FF00' }, stripPrefix: true })).to.deep.equal({
+`, { resolveVariables: true, dictionary: { 'red': '#FF0000', 'orange': '#AACC00' }, stripPrefix: true })).to.deep.equal({
   'blue': '#4176A7',
   'button-color': '#4176A7',
   'colors': {
-    'primary': '#FF00',
+    'primary': '#FF0000',
     'dark-blue': 'darken(#4176A7, 20%)'
   }
+}));
+
+it('should catch malformed less maps', () => expect(lessVarsToJS(`
+  @colors: {
+    red: #FF0000,
+    blue: #0000FF;
+  }
+`, { resolveVariables: true })).to.deep.equal({
+  '@colors': '{red:#FF0000,"blue":"#0000FF"}'
 }));

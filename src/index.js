@@ -2,9 +2,7 @@ import stripComments from 'strip-json-comments';
 
 const varRgx = /^[@$]/;
 
-const isObject = obj => typeof obj === 'object' && !!obj;
-
-const followVar = (value, lessVars, dictionary) => {
+const replaceVariables = (value, lessVars, dictionary) => {
   let replacedValue = value;
   const matches = value.match(/(?:[@$][\w-]*)/g) || [];
   // Replace each matched variable within the value
@@ -25,19 +23,20 @@ export default (sheet, options = {}) => {
     // Get an array with first element as the name of the less variable
     const definition = variable.split(/:\s*/);
 
-    // Reduce the remaining elements to a single string
-    let value = definition.splice(1).join(':');
-
-    // Strip any quotes
-    value = value.trim().replace(/^["'](.*)["']$/, '$1');
+    // Reduce the remaining elements to a single string and strip quotes
+    let value = definition.splice(1).join(':').trim().replace(/^["'](.*)["']$/, '$1');
 
     // Check if the value was a Map
     if (value.includes('{')) {
       // Manipulate value into serialized JSON string
-      value = value.replace(/\n\s*/g, '').replace(/([@$]*[\w-]*)\s*:([\s\w-#@()\/"'.%,]*);/gms, '"$1":"$2",').replace(/,}/, '}');
+      value = value.replace(/\n\s*/g, '').replace(/([\w-]*)\s*:([\s\w-#@()\/"'.%,]*);/gms, '"$1":"$2",').replace(/,}/, '}');
 
       // Parse the string to JSON
-      value = JSON.parse(value);
+      try {
+        value = JSON.parse(value);
+      } catch (error) {
+        console.error('Malformed JSON Error, check the syntax in your less file', error);
+      }
     }
 
     // Add variable definition to the list
@@ -47,16 +46,15 @@ export default (sheet, options = {}) => {
   if (resolveVariables) {
     Object.keys(lessVars).forEach(key => {
       const value = lessVars[key];
-
       // Check any nested values first
-      if (isObject(value)) {
+      if (value.constructor && value.constructor === Object) {
         Object.keys(value).forEach(key => {
           const nestedValue = value[key];
-          value[key] = followVar(nestedValue, lessVars, dictionary);
+          value[key] = replaceVariables(nestedValue, lessVars, dictionary);
         });
         lessVars[key] = value;
       } else {
-        lessVars[key] = followVar(value, lessVars, dictionary);
+        lessVars[key] = replaceVariables(value, lessVars, dictionary);
       }
     });
   }
