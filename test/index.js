@@ -41,10 +41,14 @@ it('should resolve variables that reference other variables', () => expect(lessV
 
 it('should resolve variables in any position', () => expect(lessVarsToJS(`
   @blue: #0d3880;
-  @color : darken(@blue, 20%);
+  @dark-blue : darken(@blue, 20%);
+  @angle: 215deg;
+  @gradient: linear-gradient(@angle, @blue, @dark-blue);
 `, { resolveVariables: true })).to.deep.equal({
   '@blue': '#0d3880',
-  '@color': 'darken(#0d3880, 20%)'
+  '@dark-blue': 'darken(#0d3880, 20%)',
+  '@angle': '215deg',
+  '@gradient': 'linear-gradient(215deg, #0d3880, darken(#0d3880, 20%))'
 }));
 
 it('should not resolve variables which are undefined', () => expect(lessVarsToJS(`

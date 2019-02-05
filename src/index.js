@@ -10,7 +10,7 @@ const followVar = (value, lessVars, dictionary) => {
   // Replace each matched variable within the value
   matches.forEach(match => {
     if (lessVars[match] || dictionary[match.replace(varRgx, '')]) {
-      replacedValue = value.replace(match, lessVars[match] || dictionary[match.replace(varRgx, '')]);
+      replacedValue = replacedValue.replace(match, lessVars[match] || dictionary[match.replace(varRgx, '')]);
     }
   });
   return replacedValue;
