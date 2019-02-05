@@ -9,7 +9,7 @@ const followVar = (value, lessVars, dictionary) => {
   const matches = value.match(/(?:[@$][\w-]*)/g) || [];
   // Replace each matched variable within the value
   matches.forEach(match => {
-    if (lessVars[match] || dictionary[match] || dictionary[match.replace(varRgx, '')]) {
+    if (lessVars[match] || dictionary[match.replace(varRgx, '')]) {
       replacedValue = value.replace(match, lessVars[match] || dictionary[match.replace(varRgx, '')]);
     }
   });
