@@ -44,6 +44,22 @@ Example output:
   "@foreground": "black"
 }
 ```
+Supports Less Maps:
+```less
+@colors: {
+  flat-blue : #4176A7;
+  dark-blue : darken(#4176A7, 20%);
+  font-stack: Helvetica, sans-serif;
+}
+```
+Output:
+```less
+colors: {
+  'flat-blue' : '#4176A7',
+  'dark-blue' : 'darken(#4176A7, 20%)',
+  'font-stack': 'Helvetica, sans-serif'
+}
+```
 **Note:** while it does return variables it finds within rules, it is recommended to use this on files containing only variables, as it's not a parser and is designed to extract design principles for style guides.
 
 ### Options
