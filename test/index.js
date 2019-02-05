@@ -55,12 +55,6 @@ it('should not resolve variables which are undefined', () => expect(lessVarsToJS
   '@color': 'darken(@orange, 20%)'
 }));
 
-it('should not resolve variables if there are none to resolve', () => expect(lessVarsToJS(`
-  @blue: #0d3880;
-`, { resolveVariables: true })).to.deep.equal({
-  '@blue': '#0d3880'
-}));
-
 it('should ignore comments', () => expect(lessVarsToJS(`
   // colour palette
   @blue: #0d3880;
