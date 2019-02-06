@@ -4,11 +4,14 @@ const varRgx = /^[@$]/;
 
 const replaceVariables = (value, lessVars, dictionary) => {
   let replacedValue = value;
-  const matches = value.match(/(?:[@$][\w-]*)/g) || [];
+  const matches = value.match(/(?:[@$][\w-.]*)/g) || [];
+
   // Replace each matched variable within the value
   matches.forEach(match => {
-    if (lessVars[match] || dictionary[match.replace(varRgx, '')]) {
-      replacedValue = replacedValue.replace(match, lessVars[match] || dictionary[match.replace(varRgx, '')]);
+    const mapped = match.split('.');
+    const replacement = mapped.length > 1 ? lessVars[mapped[0]][mapped[1]] : lessVars[match] || dictionary[match.replace(varRgx, '')];
+    if (replacement) {
+      replacedValue = replacedValue.replace(match, replacement);
     }
   });
   return replacedValue;

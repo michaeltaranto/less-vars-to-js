@@ -225,6 +225,20 @@ it('should resolve variables in maps', () => expect(lessVarsToJS(`
   }
 }));
 
+it('should resolve mapped variables', () => expect(lessVarsToJS(`
+  @colors: {
+    flat-blue: #4176A7;
+    dark-red : #9A1D0D;
+  };
+  @button-color: @colors.flat-blue;
+`, { resolveVariables: true })).to.deep.equal({
+  '@colors': {
+    'flat-blue': '#4176A7',
+    'dark-red': '#9A1D0D'
+  },
+  '@button-color': '#4176A7'
+}));
+
 it('should handle all possibilities at once', () => expect(lessVarsToJS(`
   @blue: #4176A7;
   @button-color: @blue;
