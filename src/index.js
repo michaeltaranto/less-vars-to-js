@@ -2,6 +2,26 @@ import stripComments from 'strip-json-comments';
 
 const varRgx = /^[@$]/;
 
+const CASES = {
+  dash: {
+    testRgx: /-/,
+    split: str => str.toLowerCase().split('-'),
+    join: '-'
+  },
+  snake: {
+    testRgx: /_/,
+    split: str => str.toLowerCase().split('_'),
+    join: '_'
+  },
+  camel: {
+    testRgx: /[A-Z]/,
+    split: str => {
+      return str.replace(/(?!^[A-Z])([A-Z]+|[0-9]+)/g, ' $1').toLowerCase().split(' ');
+    },
+    join: ''
+  }
+};
+
 const replaceVariables = (value, lessVars, dictionary) => {
   let replacedValue = value;
   const matches = value.match(/(?:[@$][\w-.]*)/g) || [];
@@ -17,10 +37,45 @@ const replaceVariables = (value, lessVars, dictionary) => {
   return replacedValue;
 };
 
+const applyChangeCase = (key, changeCase) => {
+  let parts;
+  let joinStr = CASES.camel.join; // Default for sentence case to work
+  const prefix = varRgx.test(key) ? key.charAt(0) : '';
+
+  // Find what case the key is in
+  Object.keys(CASES).forEach(caseKey => {
+    // Strip the prefix and split into an array of word(s)
+    if (!parts && CASES[caseKey].testRgx.test(key)) {
+      parts = CASES[caseKey].split(key.replace(varRgx, ''));
+    }
+
+    // Use the CASES loop to find the join string
+    if (changeCase === caseKey) {
+      joinStr = CASES[caseKey].join;
+    }
+  });
+  // If parts is still empyt it was a single word
+  if (!parts) {
+    parts = [key.replace(varRgx, '')];
+  }
+  // Apply formatting based on the new case
+  parts = parts.map((part, i) => {
+    let rPart = part;
+    if (changeCase === 'camel' || changeCase === 'sentence') {
+      if (changeCase === 'sentence' || i > 0) {
+        rPart = rPart.charAt(0).toUpperCase() + rPart.slice(1);
+      }
+    }
+    return rPart;
+  });
+  // Put it all back together
+  return prefix + parts.join(joinStr);
+};
+
 export default (sheet, options = {}) => {
   const { dictionary = {}, resolveVariables = false, stripPrefix = false, changeCase = false } = options;
   let lessVars = {};
-  const matches = stripComments(sheet).match(/(?:[@$][\w-]*)\s*:\s*(?:\{.*\}|[\s\w-#@()\/"':.%,]*)/gms) || [];
+  const matches = stripComments(sheet).match(/(?:[@$][\w-]*)\s*:\s*(?:\{.*?\}|[\s\w-#@()\/"':.%,]*)/gms) || [];
 
   matches.forEach(variable => {
     // Get an array with first element as the name of the less variable
@@ -72,58 +127,15 @@ export default (sheet, options = {}) => {
   }
 
   if (changeCase) {
-    const CASES = {
-      dash: {
-        testRgx: /-/,
-        split: str => str.toLowerCase().split('-'),
-        join: '-'
-      },
-      snake: {
-        testRgx: /_/,
-        split: str => str.toLowerCase().split('_'),
-        join: '_'
-      },
-      camel: {
-        testRgx: /[A-Z]/,
-        split: str => {
-          return str.replace(/(?!^[A-Z])([A-Z])/g, ' $1').toLowerCase().split(' ');
-        },
-        join: ''
-      },
-      sentence: {
-        testRgx: /^[A-Z]/,
-        split: str => {
-          return str.replace(/(?!^[A-Z])([A-Z])/g, ' $1').toLowerCase().split(' ');
-        },
-        join: ''
-      }
-    };
-
     lessVars = Object.keys(lessVars).reduce((prev, key) => {
-      let joinStr;
-      let parts;
-      const prefix = !stripPrefix && varRgx.test(key) ? key.charAt(0) : '';
-
-      // Find what case the key is in
-      Object.keys(CASES).forEach(caseKey => {
-        if (CASES[caseKey].testRgx.test(key)) {
-          parts = CASES[caseKey].split(key.replace(varRgx, ''));
-
-          parts = parts.map((part, i) => {
-            let rPart = part;
-            if (changeCase === 'camel' || changeCase === 'sentence') {
-              if (changeCase === 'sentence' || i > 0) {
-                rPart = rPart.charAt(0).toUpperCase() + rPart.slice(1);
-              }
-            }
-            return rPart;
-          });
-        }
-        if (changeCase === caseKey) {
-          joinStr = CASES[caseKey].join;
-        }
-      });
-      prev[prefix + parts.join(joinStr)] = lessVars[key];
+      // Change case of map keys first
+      if (lessVars[key].constructor === Object) {
+        lessVars[key] = Object.keys(lessVars[key]).reduce((prev2, key2) => {
+          prev2[applyChangeCase(key2, changeCase)] = lessVars[key][key2];
+          return prev2;
+        }, {});
+      }
+      prev[applyChangeCase(key, changeCase)] = lessVars[key];
       return prev;
     }, {});
   }

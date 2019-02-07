@@ -182,64 +182,108 @@ it('should support sass variables with stripPrefix', () => expect(lessVarsToJS(`
   'primary-color': '#333'
 }));
 
-it('should be able to change the case of keys with prefixes', () => expect(lessVarsToJS(`
+it('should camelCase keys', () => expect(lessVarsToJS(`
   @dark-red: #660000;
   @darkBlue: #000066;
   @dark_green: #006600;
   @DarkOrange: #664400;
-`, { changeCase: 'camel' })).to.deep.equal({
-  '@darkRed': '#660000',
-  '@darkBlue': '#000066',
-  '@darkGreen': '#006600',
-  '@darkOrange': '#664400'
-}));
-
-it('should be able to camelCase keys', () => expect(lessVarsToJS(`
-  @dark-red: #660000;
-  @darkBlue: #000066;
-  @dark_green: #006600;
-  @DarkOrange: #664400;
+  @purple: #990099;
 `, { changeCase: 'camel', stripPrefix: true })).to.deep.equal({
   'darkRed': '#660000',
   'darkBlue': '#000066',
   'darkGreen': '#006600',
-  'darkOrange': '#664400'
+  'darkOrange': '#664400',
+  'purple': '#990099'
 }));
 
-it('should be able to dash-case keys', () => expect(lessVarsToJS(`
+it('should dash-case keys', () => expect(lessVarsToJS(`
   @dark-red: #660000;
   @darkBlue: #000066;
   @dark_green: #006600;
   @DarkOrange: #664400;
+  @purple: #990099;
 `, { changeCase: 'dash', stripPrefix: true })).to.deep.equal({
   'dark-red': '#660000',
   'dark-blue': '#000066',
   'dark-green': '#006600',
-  'dark-orange': '#664400'
+  'dark-orange': '#664400',
+  'purple': '#990099'
 }));
 
-it('should be able to snake_case keys', () => expect(lessVarsToJS(`
+it('should snake_case keys', () => expect(lessVarsToJS(`
   @dark-red: #660000;
   @darkBlue: #000066;
   @dark_green: #006600;
   @DarkOrange: #664400;
+  @purple: #990099;
 `, { changeCase: 'snake', stripPrefix: true })).to.deep.equal({
   'dark_red': '#660000',
   'dark_blue': '#000066',
   'dark_green': '#006600',
-  'dark_orange': '#664400'
+  'dark_orange': '#664400',
+  'purple': '#990099'
 }));
 
-it('should be able to SentenceCase keys', () => expect(lessVarsToJS(`
+it('should SentenceCase keys', () => expect(lessVarsToJS(`
   @dark-red: #660000;
   @darkBlue: #000066;
   @dark_green: #006600;
   @DarkOrange: #664400;
+  @purple: #990099;
 `, { changeCase: 'sentence', stripPrefix: true })).to.deep.equal({
   'DarkRed': '#660000',
   'DarkBlue': '#000066',
   'DarkGreen': '#006600',
-  'DarkOrange': '#664400'
+  'DarkOrange': '#664400',
+  'Purple': '#990099'
+}));
+
+it('should change the case of keys with prefixes', () => expect(lessVarsToJS(`
+  @dark-red: #660000;
+  @darkBlue: #000066;
+  @dark_green: #006600;
+  @DarkOrange: #664400;
+  @purple: #990099;
+`, { changeCase: 'camel' })).to.deep.equal({
+  '@darkRed': '#660000',
+  '@darkBlue': '#000066',
+  '@darkGreen': '#006600',
+  '@darkOrange': '#664400',
+  '@purple': '#990099'
+}));
+
+it('should change the case of keys with numbers', () => expect(lessVarsToJS(`
+  @dark-red-1: #660000;
+  @dark_red_2: #660000;
+  @darkRed3: #660000;
+  @DarkRed4: #660000;
+`, { changeCase: 'snake' })).to.deep.equal({
+  '@dark_red_1': '#660000',
+  '@dark_red_2': '#660000',
+  '@dark_red_3': '#660000',
+  '@dark_red_4': '#660000'
+}));
+
+it('should change the case of keys in maps', () => expect(lessVarsToJS(`
+  @colors: {
+    dark-red: #660000;
+    darkBlue: #000066;
+  }
+  @other-colors: {
+    dark_green: #006600;
+    DarkOrange: #664400;
+    purple: #990099;
+  }
+`, { changeCase: 'camel' })).to.deep.equal({
+  '@colors': {
+    'darkRed': '#660000',
+    'darkBlue': '#000066'
+  },
+  '@otherColors': {
+    'darkGreen': '#006600',
+    'darkOrange': '#664400',
+    'purple': '#990099'
+  }
 }));
 
 it('should support maps', () => expect(lessVarsToJS(`
@@ -298,12 +342,20 @@ it('should handle all possibilities at once', () => expect(lessVarsToJS(`
     primary: @red;
     dark-blue: darken(@blue, 20%);
   }
-`, { resolveVariables: true, dictionary: { 'red': '#FF0000', 'orange': '#AACC00' }, stripPrefix: true })).to.deep.equal({
+  @moreColors: {
+    white: #FFFFFF;
+    dark-gray: #444444;
+  }
+`, { resolveVariables: true, dictionary: { 'red': '#FF0000', 'orange': '#AACC00' }, stripPrefix: true, changeCase: 'snake' })).to.deep.equal({
   'blue': '#4176A7',
-  'button-color': '#4176A7',
+  'button_color': '#4176A7',
   'colors': {
     'primary': '#FF0000',
-    'dark-blue': 'darken(#4176A7, 20%)'
+    'dark_blue': 'darken(#4176A7, 20%)'
+  },
+  'more_colors': {
+    'white': '#FFFFFF',
+    'dark_gray': '#444444'
   }
 }));
 
