@@ -9,16 +9,16 @@ const replaceVariables = (value, lessVars, dictionary) => {
   // Replace each matched variable within the value
   matches.forEach(match => {
     const mapped = match.split('.');
-    const replacement = mapped.length > 1 ? lessVars[mapped[0]][mapped[1]] : lessVars[match] || dictionary[match.replace(varRgx, '')];
-    if (replacement) {
-      replacedValue = replacedValue.replace(match, replacement);
-    }
+    const replacement = mapped.length > 1 ?
+      lessVars[mapped[0]][mapped[1]] :
+      dictionary[match.replace(varRgx, '')] || lessVars[match];
+    replacedValue = replacedValue.replace(match, replacement);
   });
   return replacedValue;
 };
 
 export default (sheet, options = {}) => {
-  const { dictionary = {}, resolveVariables = false, stripPrefix = false } = options;
+  const { dictionary = {}, resolveVariables = false, stripPrefix = false, changeCase = false } = options;
   let lessVars = {};
   const matches = stripComments(sheet).match(/(?:[@$][\w-]*)\s*:\s*(?:\{.*\}|[\s\w-#@()\/"':.%,]*)/gms) || [];
 
@@ -67,6 +67,63 @@ export default (sheet, options = {}) => {
 
     lessVars = Object.keys(lessVars).reduce((prev, key) => {
       prev[transformKey(key)] = lessVars[key];
+      return prev;
+    }, {});
+  }
+
+  if (changeCase) {
+    const CASES = {
+      dash: {
+        testRgx: /-/,
+        split: str => str.toLowerCase().split('-'),
+        join: '-'
+      },
+      snake: {
+        testRgx: /_/,
+        split: str => str.toLowerCase().split('_'),
+        join: '_'
+      },
+      camel: {
+        testRgx: /[A-Z]/,
+        split: str => {
+          return str.replace(/(?!^[A-Z])([A-Z])/g, ' $1').toLowerCase().split(' ');
+        },
+        join: ''
+      },
+      sentence: {
+        testRgx: /^[A-Z]/,
+        split: str => {
+          return str.replace(/(?!^[A-Z])([A-Z])/g, ' $1').toLowerCase().split(' ');
+        },
+        join: ''
+      }
+    };
+
+    lessVars = Object.keys(lessVars).reduce((prev, key) => {
+      let joinStr;
+      let parts;
+      const prefix = !stripPrefix && varRgx.test(key) ? key.charAt(0) : '';
+
+      // Find what case the key is in
+      Object.keys(CASES).forEach(caseKey => {
+        if (CASES[caseKey].testRgx.test(key)) {
+          parts = CASES[caseKey].split(key.replace(varRgx, ''));
+
+          parts = parts.map((part, i) => {
+            let rPart = part;
+            if (changeCase === 'camel' || changeCase === 'sentence') {
+              if (changeCase === 'sentence' || i > 0) {
+                rPart = rPart.charAt(0).toUpperCase() + rPart.slice(1);
+              }
+            }
+            return rPart;
+          });
+        }
+        if (changeCase === caseKey) {
+          joinStr = CASES[caseKey].join;
+        }
+      });
+      prev[prefix + parts.join(joinStr)] = lessVars[key];
       return prev;
     }, {});
   }

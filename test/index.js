@@ -51,14 +51,6 @@ it('should resolve variables in any position', () => expect(lessVarsToJS(`
   '@gradient': 'linear-gradient(215deg, #0d3880, darken(#0d3880, 20%))'
 }));
 
-it('should not resolve variables which are undefined', () => expect(lessVarsToJS(`
-  @blue: @pink;
-  @color: darken(@orange, 20%);
-`, { resolveVariables: true })).to.deep.equal({
-  '@blue': '@pink',
-  '@color': 'darken(@orange, 20%)'
-}));
-
 it('should ignore comments', () => expect(lessVarsToJS(`
   // colour palette
   @blue: #0d3880;
@@ -154,18 +146,18 @@ it('should remove the @ when stripPrefix is true', () => expect(lessVarsToJS(`
   'primary': '@orange'
 }));
 
-it('should use default variable values', () => expect(lessVarsToJS(`
+it('should use dictionary variable values', () => expect(lessVarsToJS(`
   @color : @blue;
 `, { resolveVariables: true, dictionary: { 'blue': '#0000FF' } })).to.deep.equal({
   '@color': '#0000FF'
 }));
 
-it('should prefer less variables over dictionary', () => expect(lessVarsToJS(`
+it('should prefer dictionary over less variables', () => expect(lessVarsToJS(`
   @blue  : #4176A7;
   @color : @blue;
 `, { resolveVariables: true, dictionary: { 'blue': '#0000FF' } })).to.deep.equal({
   '@blue': '#4176A7',
-  '@color': '#4176A7'
+  '@color': '#0000FF'
 }));
 
 it('should not parse functions', () => expect(lessVarsToJS(`
@@ -188,6 +180,66 @@ it('should support sass variables with stripPrefix', () => expect(lessVarsToJS(`
 `, { stripPrefix: true })).to.deep.equal({
   'font-stack': 'Helvetica, sans-serif',
   'primary-color': '#333'
+}));
+
+it('should be able to change the case of keys with prefixes', () => expect(lessVarsToJS(`
+  @dark-red: #660000;
+  @darkBlue: #000066;
+  @dark_green: #006600;
+  @DarkOrange: #664400;
+`, { changeCase: 'camel' })).to.deep.equal({
+  '@darkRed': '#660000',
+  '@darkBlue': '#000066',
+  '@darkGreen': '#006600',
+  '@darkOrange': '#664400'
+}));
+
+it('should be able to camelCase keys', () => expect(lessVarsToJS(`
+  @dark-red: #660000;
+  @darkBlue: #000066;
+  @dark_green: #006600;
+  @DarkOrange: #664400;
+`, { changeCase: 'camel', stripPrefix: true })).to.deep.equal({
+  'darkRed': '#660000',
+  'darkBlue': '#000066',
+  'darkGreen': '#006600',
+  'darkOrange': '#664400'
+}));
+
+it('should be able to dash-case keys', () => expect(lessVarsToJS(`
+  @dark-red: #660000;
+  @darkBlue: #000066;
+  @dark_green: #006600;
+  @DarkOrange: #664400;
+`, { changeCase: 'dash', stripPrefix: true })).to.deep.equal({
+  'dark-red': '#660000',
+  'dark-blue': '#000066',
+  'dark-green': '#006600',
+  'dark-orange': '#664400'
+}));
+
+it('should be able to snake_case keys', () => expect(lessVarsToJS(`
+  @dark-red: #660000;
+  @darkBlue: #000066;
+  @dark_green: #006600;
+  @DarkOrange: #664400;
+`, { changeCase: 'snake', stripPrefix: true })).to.deep.equal({
+  'dark_red': '#660000',
+  'dark_blue': '#000066',
+  'dark_green': '#006600',
+  'dark_orange': '#664400'
+}));
+
+it('should be able to SentenceCase keys', () => expect(lessVarsToJS(`
+  @dark-red: #660000;
+  @darkBlue: #000066;
+  @dark_green: #006600;
+  @DarkOrange: #664400;
+`, { changeCase: 'sentence', stripPrefix: true })).to.deep.equal({
+  'DarkRed': '#660000',
+  'DarkBlue': '#000066',
+  'DarkGreen': '#006600',
+  'DarkOrange': '#664400'
 }));
 
 it('should support maps', () => expect(lessVarsToJS(`
