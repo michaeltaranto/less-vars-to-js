@@ -12,7 +12,7 @@ const followVar = (value, lessVars, dictionary) => {
 export default (sheet, options = {}) => {
   const { dictionary = {}, resolveVariables = false, stripPrefix = false } = options;
   let lessVars = {};
-  const matches = stripComments(sheet).match(/[@$](.*:[^;]*)/g) || [];
+  const matches = stripComments(sheet).match(/[@$](.*?:[^;]*)/g) || [];
 
   matches.forEach(variable => {
     const definition = variable.split(/:\s*/);

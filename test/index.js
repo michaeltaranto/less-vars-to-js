@@ -157,3 +157,17 @@ it('should support sass variables with stripPrefix', () => expect(lessVarsToJS(`
   'font-stack': 'Helvetica, sans-serif',
   'primary-color': '#333'
 }));
+
+it('should support sass variables without newline', () => expect(lessVarsToJS(`
+  $font-stack:    Helvetica, sans-serif;$primary-color: #333;
+`)).to.deep.equal({
+  '$font-stack': 'Helvetica, sans-serif',
+  '$primary-color': '#333'
+}));
+
+it('should support less variables without newline', () => expect(lessVarsToJS(`
+  @blue: #0d3880;@pink: #e60278;
+`)).to.deep.equal({
+  '@blue': '#0d3880',
+  '@pink': '#e60278'
+}));
