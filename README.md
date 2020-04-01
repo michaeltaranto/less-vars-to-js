@@ -54,6 +54,7 @@ Example output:
 | stripPrefix       | Removes the `@` or `$` in the returned object keys.                                                          |
 
 ### Usage
+
 ```js
 import lessToJs from 'less-vars-to-js';
 import fs from 'fs';
@@ -82,6 +83,12 @@ export default class Palette extends Component {
     );
   }
 }
+```
+
+use in typescript.
+
+```ts
+import * as lessToJs from 'less-vars-to-js';
 ```
 
 ### License
